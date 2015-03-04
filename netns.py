@@ -68,8 +68,8 @@ class NetNS (object):
         # our namespace on exit.
         self.myns = open(self.mypath)
         with open(self.targetpath) as fd:
-            setns(fd.fileno(), CLONE_NEWNET)
+            setns(fd, CLONE_NEWNET)
 
     def __exit__(self, *args):
-        setns(self.myns.fileno(), CLONE_NEWNET)
+        setns(self.myns, CLONE_NEWNET)
         self.myns.close()
