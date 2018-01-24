@@ -3,13 +3,20 @@ import socket as socket_module
 
 # Python doesn't expose the `setns()` function manually, so
 # we'll use the `ctypes` module to make it available.
-from ctypes import cdll
-libc = cdll.LoadLibrary('libc.so.6')
-_setns = libc.setns
+from ctypes import CDLL, get_errno
 
 CLONE_NEWIPC = 0x08000000
 CLONE_NEWNET = 0x40000000
 CLONE_NEWUTS = 0x04000000
+
+
+def errcheck(ret, func, args):
+    if ret == -1:
+        e = get_errno()
+        raise OSError(e, os.strerror(e))
+
+libc = CDLL('libc.so.6', use_errno=True)
+libc.setns.errcheck = errcheck
 
 
 def setns(fd, nstype):
@@ -23,7 +30,7 @@ def setns(fd, nstype):
     if hasattr(fd, 'fileno'):
         fd = fd.fileno()
 
-    _setns(fd, nstype)
+    return libc.setns(fd, nstype)
 
 
 def socket(nspath, *args):
@@ -52,6 +59,9 @@ def get_ns_path(nspath=None, nsname=None, nspid=None):
         nspath = '/var/run/netns/%s' % nsname
     elif nspid:
         nspath = '/proc/%d/ns/net' % nspid
+
+    if not os.path.exists(nspath):
+        raise ValueError('namespace path %s does not exist' % nspath)
 
     return nspath
 
