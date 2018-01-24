@@ -13,9 +13,12 @@ CLONE_NEWUTS = 0x04000000
 
 
 def setns(fd, nstype):
-    '''Given a file descriptor referring to a namespace, reassociate the
+    '''Change the network namespace of the calling thread.
+
+    Given a file descriptor referring to a namespace, reassociate the
     calling thread with that namespace.  The fd argument may be either a
-    numeric file  descriptor or a Python object with a fileno() method.'''
+    numeric file  descriptor or a Python object with a fileno() method.
+    '''
 
     if hasattr(fd, 'fileno'):
         fd = fd.fileno()
@@ -24,20 +27,26 @@ def setns(fd, nstype):
 
 
 def socket(nspath, *args):
-    '''This is a wrapper for socket.socket() that will return a socket
+    '''Return a socket from a network namespace.
+
+    This is a wrapper for socket.socket() that will return a socket
     inside the namespace specified by the nspath argument, which should be
     a filesystem path to an appropriate namespace file.  You can use the
     get_ns_path() function to generate an appropriate filesystem path if
-    you know a namespace name or pid.'''
+    you know a namespace name or pid.
+    '''
 
     with NetNS(nspath=nspath):
         return socket_module.socket(*args)
 
 
 def get_ns_path(nspath=None, nsname=None, nspid=None):
-    '''Generate a filesystem path from a namespace name or pid, and return
+    '''Generate a filesystem path from a namespace name or pid.
+
+    Generate a filesystem path from a namespace name or pid, and return
     a filesystem path to the appropriate file.  Returns the nspath argument
-    if both nsname and nspid are None.'''
+    if both nsname and nspid are None.
+    '''
 
     if nsname:
         nspath = '/var/run/netns/%s' % nsname
@@ -48,16 +57,19 @@ def get_ns_path(nspath=None, nsname=None, nspid=None):
 
 
 class NetNS (object):
-    '''This is a context manager that on enter assigns the current process
+    '''A context manager for running code inside a network namespace.
+
+    This is a context manager that on enter assigns the current process
     to an alternate network namespace (specified by name, filesystem path,
     or pid) and then re-assigns the process to its original network
-    namespace on exit.'''
+    namespace on exit.
+    '''
 
     def __init__(self, nsname=None, nspath=None, nspid=None):
         self.mypath = get_ns_path(nspid=os.getpid())
         self.targetpath = get_ns_path(nspath,
-                                  nsname=nsname,
-                                  nspid=nspid)
+                                      nsname=nsname,
+                                      nspid=nspid)
 
         if not self.targetpath:
             raise ValueError('invalid namespace')
