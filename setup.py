@@ -8,5 +8,6 @@ setuptools.setup(
     url='http://github.com/larsks/python-netns',
     description='Wrapper for the Linux setns() system call',
     name='netns',
+    license='GPLv3',
     py_modules=['netns'],
     version=1, )
