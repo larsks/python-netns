@@ -1,1 +1,6 @@
 *.py[co]
+# Ignore packaging artifacts
+build/
+dist/
+sdist/
+*.egg-info/
