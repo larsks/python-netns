@@ -10,4 +10,4 @@ setuptools.setup(
     name='netns',
     license='GPLv3',
     py_modules=['netns'],
-    version=1, )
+    version='1.0')
