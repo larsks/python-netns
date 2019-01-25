@@ -1,0 +1,32 @@
+language: python
+python:
+  - '3.6'
+
+# By default travis tries to install the package with `pip install -r
+# requirements.txt` but we don't need a requirements.txt so we override the
+# default command
+install:
+  - python setup.py install
+
+# By default travis runs pytest, but we don't have tests so we just make sure
+# the package is importable instead
+script:
+  - python -m netns
+
+# Upload a new release to pypi when a new tag is pushed
+# See also: https://docs.travis-ci.com/user/deployment/pypi/
+deploy:
+  provider: pypi
+  # Optionally a custom server can be provided. For instance to upload to test.pypi.org:
+  # server: https://upload.pypi.org/legacy/
+  user: little-dude
+  # To generate the secure password:
+  #
+  #     travis encrypt 'passwordwithonlyalphanumericcharacters'  --add deploy.password
+  #
+  # See also:
+  # https://docs.travis-ci.com/user/encryption-keys/
+  password:
+    secure: W98UI7hPWt+zQ5cUjWab2Z89WGBpHO8MvOa8TYM0zg9HVXBBWrZDtr4hKyASGl17n6nSa+SjiavfNAQX/w9ZTM7bh7XAlqr9bl00A56ObRaXcqraWB3MqB+D4GWhI3k+teV9OhrrxlNW5FjJnURpsvOmIYPhA3AqAKV59I/K6prFTFf6EKWk71lzIUsieyooEJAGX2rf23Gcuj8OfMwc8kpOIB3XpUCGEUzEhEyYDNWDTWNAfTxC+diE2GUEZ2yDIJBnHB2ULCHb/xVTOtE9PjJ+wNEjU/mNu4gvP0h3NryPTJQpoBHgdh/A8NN4AETdafunR/24eSClCnjn5dCMjhauuZZa4PPDxW8ZHw8kVSP57C6RehEslzLHf875rTq2ZNxewxsD2OeiMzYgoRKcmCCLJNpOeSFdHaaSzc63wgNjvQ49l3BEvuwBgN0+2tEQiPc9XjqIPLRBURqsdN2jshOBXiUJcgfOBTJWoz8CQBA0fmE7U37YYyJlPt2wmKFRN8Gig2xoiGt8criXzsaa9nwvDmOliJtatbGaqC126jlVQ1tCp1YOcYKxqzOI/vQMXbAeSRJ8ZdHXOKj/Wbo2rPNl/PdMgj0hs515hHBY4QiFX/RDvdUl5wBRqOwcPHrPjB9kYivFLKcvPwqjHKnGg8RJw5WbhwZ834p7OWVMPas=
+  on:
+    tags: true
