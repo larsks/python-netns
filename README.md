@@ -34,4 +34,4 @@ These allow fixing of a lot of common issues seen by namespace-unaware higher-le
     with netns.NetNS(nsname='myns', bind_mount=True):
         requests_ses = requests.Session()
         resp = requests_ses.get('http://www.google.com')
-        print(resp.txt)
+        print(resp.text)
