@@ -54,9 +54,9 @@ try:
 
     s = netns.socket(netns.get_ns_path(nsname="sandbox"))
     s.connect(("loripsum.net", 80))
-    s.send("GET /api/3/short HTTP/1.1\r\n")
-    s.send("Host: loripsum.net\r\n")
-    s.send("\r\n")
+    s.send(b"GET /api/3/short HTTP/1.1\r\n")
+    s.send(b"Host: loripsum.net\r\n")
+    s.send(b"\r\n")
     d = s.recv(1024)
     print(d)
 finally:
