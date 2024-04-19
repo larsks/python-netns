@@ -3,7 +3,8 @@ import socket as socket_module
 
 # Python doesn't expose the `setns()` function manually, so
 # we'll use the `ctypes` module to make it available.
-from ctypes import CDLL, get_errno
+import ctypes
+import ctypes.util
 
 CLONE_NEWIPC = 0x08000000
 CLONE_NEWNET = 0x40000000
@@ -12,11 +13,11 @@ CLONE_NEWUTS = 0x04000000
 
 def errcheck(ret, func, args):
     if ret == -1:
-        e = get_errno()
+        e = ctypes.get_errno()
         raise OSError(e, os.strerror(e))
 
 
-libc = CDLL("libc.so.6", use_errno=True)
+libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
 libc.setns.errcheck = errcheck
 
 
