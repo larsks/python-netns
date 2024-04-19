@@ -10,6 +10,8 @@ CLONE_NEWIPC = 0x08000000
 CLONE_NEWNET = 0x40000000
 CLONE_NEWUTS = 0x04000000
 
+NETNS_RUN_DIR = "/var/run/netns"
+
 
 def errcheck(ret, func, args):
     if ret == -1:
@@ -58,12 +60,12 @@ def get_ns_path(nspath=None, nsname=None, nspid=None):
     """
 
     if nsname:
-        nspath = "/var/run/netns/%s" % nsname
+        nspath = f"{NETNS_RUN_DIR}/{nsname}"
     elif nspid:
-        nspath = "/proc/%d/ns/net" % nspid
+        nspath = f"/proc/{nspid}/ns/net"
 
     if not os.path.exists(nspath):
-        raise ValueError("namespace path %s does not exist" % nspath)
+        raise ValueError(f"namespace path {nspath} does not exist")
 
     return nspath
 
